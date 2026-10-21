@@ -88,28 +88,36 @@
 </head>
 
 <body>
-  <h1>Lesson 2  </h1>
+  <h1>Lesson 2</h1>
   <h2>Cell Processes and Energy</h2>
-   <p id="scoreBoard">Score: 0 / 0 (Answered)</p> 
 
-  
-  <span id="count"></span>
+  <div class="info-container">
+    <span id="count"></span>
+    <p id="scoreBoard">Score: 0 / 0</p> 
+  </div>
+
+  <!-- ကတ်ပြားကိုနှိပ်ရင် လှန်ပေးမည့် စနစ်တစ်ခုပဲ ချန်ထားပါသည် -->
   <div class="card" onclick="flipCard()">
     <div id="word"></div>
     <div id="meaning" hidden></div>
+    <div id="example"></div>
     <p id="hint">Click the card to see the answer</p>
   </div>
-    <button onclick="markCard(true)">✔️ Correct</button>
-    <button onclick="markCard(false)">❌ Incorrect</button>
 
-   <button id="prevBtn" onclick="previousCard()">Previous</button>
-    <button onclick="flipCard()">Show Answer</button>
+  <div class="controls-row">
+    <button id="prevBtn" onclick="previousCard()">Previous</button>
+    <!-- Show Answer ခလုတ်က နေရာလွဲမသွားစေရန် ဤနေရာမှ တိုက်ရိုက်ထိန်းချုပ်မှုကို ဖြုတ်ထားပါသည် -->
+    <button id="flipBtn" onclick="flipCard()">Show Answer</button>
     <button id="nextBtn" onclick="nextCard()">Next</button>
+  </div>
+
+  <div id="scoringSection" class="controls-row" hidden>
+    <button class="btn-correct" onclick="markCard(true)">✔️ Correct (မှန်တယ်)</button>
+    <button class="btn-incorrect" onclick="markCard(false)">❌ Incorrect (မှားတယ်)</button>
   </div>
   
   <br>
-  
-  <button id="restartBtn" onclick="goToFirstCard()">Go to Card 1</button>
+  <button id="restartBtn" onclick="goToFirstCard()">Reset / Go to Card 1</button>
 
   <script>
     function goToFirstCard() {
@@ -334,11 +342,9 @@ let current = 0;
     document.getElementById("hint").textContent = "Click the card to see the answer";
     document.getElementById("count").textContent = `Card ${current + 1} of ${cards.length}`;
 
-    // Previous နှင့် Next ခလုတ်များ ပိတ်/ဖွင့် စနစ်
     document.getElementById("prevBtn").disabled = (current === 0);
     document.getElementById("nextBtn").disabled = (current === cards.length - 1);
     
-    // ကတ်အသစ်ပြောင်းတိုင်း အမှတ်ပေးခလုတ်ကို ခေတ္တဝှက်ထားပါမည် (သင်ကိုယ်တိုင် HTML ထဲတွင် id="scoringSection" ပေးထားလျှင် အလုပ်လုပ်ပါမည်)
     const scoreSec = document.getElementById("scoringSection");
     if (scoreSec) scoreSec.hidden = true;
 
@@ -346,25 +352,27 @@ let current = 0;
     showingAnswer = false;
   }
 
-  // ကတ်ပြားကို လှန်မည့် လုပ်ဆောင်ချက်
   function flipCard() {
     showingAnswer = !showingAnswer;
     document.getElementById("word").hidden = showingAnswer;
     document.getElementById("meaning").hidden = !showingAnswer;
     document.getElementById("hint").textContent = showingAnswer ? "Click to see the word" : "Click the card to see the answer";
     
-    // အဖြေကြည့်ပြီးမှ အမှတ်ပေးခလုတ်တွဲကို ပြသပေးမည်
     const scoreSec = document.getElementById("scoringSection");
     if (scoreSec && showingAnswer) scoreSec.hidden = false;
   }
 
-  // သင့်ရဲ့ ကိုယ်ပိုင်အမှတ်ပေးခလုတ်များအတွက် ချိတ်ဆက်ရန် Function
+  // ပြင်ဆင်ထားသော အမှတ်ပေးခလုတ် Function ဖြစ်ပါသည်
   function markCard(isCorrect) {
     scores[current] = isCorrect; 
     updateScoreBoard();
 
     if (current < cards.length - 1) {
       current++;
+      
+      // နောက်တစ်ကတ်ပြောင်းလျှင် အဖြေကိုပြန်ဝှက်ပြီး Word ကိုပဲ ပြန်စပေါ်စေမည့်စနစ်
+      showingAnswer = false; 
+      
       showCard();
     } else {
       const totalCorrect = scores.filter(score => score === true).length;
@@ -372,39 +380,38 @@ let current = 0;
     }
   }
 
-  // စုစုပေါင်းရမှတ်ပြဘုတ်ကို ပြောင်းလဲပေးမည့် လုပ်ဆောင်ချက်
   function updateScoreBoard() {
     const attempted = scores.filter(score => score !== null).length;
     const correct = scores.filter(score => score === true).length;
     const scoreElement = document.getElementById("scoreBoard");
     if (scoreElement) {
-      scoreElement.textContent = `Score: ${correct} / ${attempted} (Answered)`;
+      scoreElement.textContent = `Score: ${correct} / ${attempted}`;
     }
   }
 
-  // Next ခလုတ်အတွက်
   function nextCard() {
     if (current < cards.length - 1) {
       current++;
+      showingAnswer = false; // Next ခလုတ်နှိပ်လျှင်လည်း အဖြေကိုပြန်ဝှက်ရန်
       showCard();
     }
   }
 
-  // Previous ခလုတ်အတွက်
   function previousCard() {
     if (current > 0) {
       current--;
+      showingAnswer = false; // Previous ခလုတ်နှိပ်လျှင်လည်း အဖြေကိုပြန်ဝှက်ရန်
       showCard();
     }
   }
 
-  // Reset ခလုတ်အတွက်
   function goToFirstCard() {
     current = 0;
     scores = new Array(cards.length).fill(null);
+    showingAnswer = false;
     showCard();
   }
 
-  // စာမျက်နှာစတင်ပွင့်ချိန်တွင် ပထမဆုံးကတ်ပြားကို အလိုအလျောက် ခေါ်ပေးရန်
+  // စာမျက်နှာစဖွင့်ချင်း ပထမဆုံးကတ်ကို ခေါ်ပေးရန်
   showCard();
 </script>
