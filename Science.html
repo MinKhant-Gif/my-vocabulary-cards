@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Vocabulary Cards</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2ff;
+      text-align: center;
+      padding: 30px 15px;
+    }
+
+    h1 { color: #3730a3; }
+
+    .card {
+      background: white;
+      max-width: 400px;
+      min-height: 220px;
+      margin: 25px auto;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px #0002;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #word { font-size: 30px; font-weight: bold; }
+    #meaning { font-size: 22px; color: #4f46e5; }
+    #hint { color: #777; margin-top: 15px; }
+
+    button {
+      padding: 12px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      background: #4f46e5;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #3730a3; }
+  </style>
+</head>
+
+<body>
+  <h1>Lesson 2  </h1>
+  <h2>Cell Processes and Energy</h2>
+  <p id="count"></p>
+
+  <div class="card" onclick="flipCard()">
+    <div id="word"></div>
+    <div id="meaning" hidden></div>
+    <p id="hint">Click the card to see the answer</p>
+  </div>
+
+  <button onclick="previousCard()">Previous</button>
+  <button onclick="flipCard()">Show Answer</button>
+  <button onclick="nextCard()">Next</button>
+
+  <script>
+    const cards = [
+      
+  {
+    word: "Cell process (Noun)",
+    meaning: "ဆဲလ်အတွင်း ဖြစ်ပေါ်သော လုပ်ငန်းစဉ်",
+    example: "Cells need energy for life processes."
+  },
+  {
+    word: "Energy (Noun)",
+    meaning: "စွမ်းအင်",
+    example: "All cells need energy."
+  },
+  {
+    word: "Growth (Noun)",
+    meaning: "ကြီးထွားမှု",
+    example: "Plants need energy for growth."
+  },
+  {
+    word: "Reproduction (Noun)",
+    meaning: "မျိုးပွားခြင်း",
+    example: "Cells need energy for reproduction."
+  },
+  {
+    word: "Algae (Noun)",
+    meaning: "ရေညှိများ",
+    example: "Some algae use sunlight to make food."
+  },
+  {
+    word: "Bacteria (Noun)",
+    meaning: "ဘက်တီးရီးယားများ",
+    example: "Some bacteria use energy from sunlight."
+  },
+  {
+    word: "Photosynthesis (Noun)",
+    meaning: "အလင်းမှီအစာချက်လုပ်ခြင်း",
+    example: "Plants make food through photosynthesis."
+  },
+  {
+    word: "Sunlight (Noun)",
+    meaning: "နေရောင်ခြည်",
+    example: "Plants need sunlight for photosynthesis."
+  },
+  {
+    word: "Chemical reaction (Noun)",
+    meaning: "ဓာတုတုံ့ပြန်မှု",
+    example: "Photosynthesis involves chemical reactions."
+  },
+  {
+    word: "Carbon dioxide (Noun)",
+    meaning: "ကာဗွန်ဒိုင်အောက်ဆိုဒ် (CO₂)",
+    example: "Plants take in carbon dioxide."
+  },
+  {
+    word: "Water (Noun)",
+    meaning: "ရေ (H₂O)",
+    example: "Plants use water during photosynthesis."
+  },
+  {
+    word: "Oxygen (Noun)",
+    meaning: "အောက်ဆီဂျင် (O₂)",
+    example: "Plants release oxygen."
+  },
+  {
+    word: "Glucose (Noun)",
+    meaning: "ဂလူးကို့စ်၊ ရိုးရှင်းသောသကြားတစ်မျိုး",
+    example: "Plants produce glucose."
+  },
+  {
+    word: "Chloroplast (Noun)",
+    meaning: "အလင်းမှီအစာချက်လုပ်မှု ဖြစ်ပေါ်ရာ ဆဲလ်အစိတ်အပိုင်း",
+    example: "Chloroplasts are found in plant cells."
+  },
+  {
+    word: "Chlorophyll (Noun)",
+    meaning: "ကလိုရိုဖီးလ်၊ အစိမ်းရောင်ရောင်ခြယ်ပစ္စည်း",
+    example: "Chlorophyll absorbs light energy."
+  },
+  {
+    word: "Pigment (Noun)",
+    meaning: "ရောင်ခြယ်ပစ္စည်း",
+    example: "Chlorophyll is a green pigment."
+  },
+  {
+    word: "Absorb (Verb)",
+    meaning: "စုပ်ယူသည်",
+    example: "Chlorophyll absorbs light energy."
+  },
+  {
+    word: "Capture (Verb)",
+    meaning: "ဖမ်းယူသည်",
+    example: "Chloroplasts capture light energy."
+  },
+  {
+    word: "Raw material (Noun)",
+    meaning: "ကုန်ကြမ်း၊ တုံ့ပြန်မှုအတွက် လိုအပ်သော မူလပစ္စည်း",
+    example: "Water is a raw material for photosynthesis."
+  },
+  {
+    word: "Product (Noun)",
+    meaning: "ထွက်ကုန်၊ တုံ့ပြန်မှုမှ ရရှိသောပစ္စည်း",
+    example: "Oxygen is a product of photosynthesis."
+  },
+  {
+    word: "Carbohydrate (Noun)",
+    meaning: "ကာဗိုဟိုက်ဒရိတ်၊ စွမ်းအင်ပေးသော အာဟာရဓာတ်",
+    example: "Glucose is a carbohydrate."
+  },
+  {
+    word: "Break down (Phrasal verb)",
+    meaning: "ဖြိုခွဲသည်၊ ခွဲခြမ်းဖျက်ဆီးသည်",
+    example: "Cells break down glucose."
+  },
+  {
+    word: "Release (Verb)",
+    meaning: "ထုတ်လွှတ်သည်",
+    example: "Plants release oxygen."
+  },
+  {
+    word: "Cellular respiration (Noun)",
+    meaning: "ဆဲလ်အသက်ရှူခြင်း၊ ဂလူးကို့စ်မှ စွမ်းအင်ရယူသည့် လုပ်ငန်းစဉ်",
+    example: "Cells release energy through cellular respiration."
+  },
+  {
+    word: "Atmosphere (Noun)",
+    meaning: "လေထု",
+    example: "Oxygen is released into the atmosphere."
+  },
+  {
+    word: "Waste product (Noun)",
+    meaning: "စွန့်ပစ်ပစ္စည်း၊ လုပ်ငန်းစဉ်မှ ထွက်လာသော အပိုပစ္စည်း",
+    example: "Plants release oxygen as a waste product of photosynthesis."
+  },
+  {
+    word: "Organism (Noun)",
+    meaning: "သက်ရှိတစ်ခု",
+    example: "Animals are living organisms."
+  },
+  {
+    word: "Palisade cell (Noun)",
+    meaning: "အရွက်၏ အလင်းမှီအစာချက်လုပ်မှု အဓိကဖြစ်ပေါ်ရာ ဆဲလ်",
+    example: "Photosynthesis occurs mainly in palisade cells."
+  },
+  {
+    word: "Epidermal cell (Noun)",
+    meaning: "အပေါ်ယံအလွှာဆဲလ်",
+    example: "Sunlight passes through epidermal cells."
+  },
+  {
+    word: "Spongy cell (Noun)",
+    meaning: "အရွက်အတွင်းရှိ ရေမြှုပ်ပုံစံဆဲလ်",
+    example: "Spongy cells are found inside leaves."
+  },
+  {
+    word: "Stoma (Noun)",
+    meaning: "အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက် တစ်ပေါက်",
+    example: "Carbon dioxide enters through a stoma."
+  },
+  {
+    word: "Stomata (Noun)",
+    meaning: "Stoma ၏ အများကိန်း၊ အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက်များ",
+    example: "Carbon dioxide enters through stomata."
+  },
+  {
+    word: "Xylem (Noun)",
+    meaning: "အပင်အတွင်း ရေနှင့် သတ္တုဓာတ်များ သယ်ပို့သော တစ်ရှူး",
+    example: "Xylem transports water."
+  },
+  {
+    word: "Diffuse (Verb)",
+    meaning: "ပျံ့နှံ့သွားသည်",
+    example: "Water diffuses from the xylem."
+  },
+  {
+    word: "Transport (Verb)",
+    meaning: "သယ်ယူပို့ဆောင်သည်",
+    example: "Xylem transports water through a plant."
+  },
+  {
+    word: "Greenhouse gas (Noun)",
+    meaning: "အပူကို လေထုထဲတွင် ထိန်းသိမ်းစေသော ဖန်လုံအိမ်ဓာတ်ငွေ့",
+    example: "Carbon dioxide is a greenhouse gas."
+  },
+  {
+    word: "Global warming (Noun)",
+    meaning: "ကမ္ဘာ့ပျမ်းမျှအပူချိန် မြင့်တက်လာခြင်း",
+    example: "Greenhouse gases contribute to global warming."
+  },
+  {
+    word: "Population (Noun)",
+    meaning: "လူဦးရေ၊ သက်ရှိအုပ်စုတစ်စု၏ အရေအတွက်",
+    example: "The population of plants increased."
+  },
+  {
+    word: "Increase (Verb)",
+    meaning: "တိုးလာသည်၊ တိုးမြှင့်သည်",
+    example: "More light can increase photosynthesis."
+  },
+  {
+    word: "Harvest (Noun / Verb)",
+    meaning: "ရိတ်သိမ်းခြင်း / ရိတ်သိမ်းသည်",
+    example: "Farmers harvest crops."
+  }
+   ];
+
+    let current = 0;
+    let showingAnswer = false;
+
+    function showCard() {
+      document.getElementById("word").textContent =
+        cards[current].word;
+
+      document.getElementById("meaning").textContent =
+        cards[current].meaning;
+
+      document.getElementById("meaning").hidden = true;
+      document.getElementById("word").hidden = false;
+      document.getElementById("hint").textContent =
+        "Click the card to see the answer";
+
+      document.getElementById("count").textContent =
+        `Card ${current + 1} of ${cards.length}`;
+
+      showingAnswer = false;
+    }
+
+    function flipCard() {
+      showingAnswer = !showingAnswer;
+
+      document.getElementById("word").hidden = showingAnswer;
+      document.getElementById("meaning").hidden = !showingAnswer;
+
+      document.getElementById("hint").textContent =
+        showingAnswer ? "Click to see the word" :
+        "Click the card to see the answer";
+    }
+
+    function nextCard() {
+      current = (current + 1) % cards.length;
+      showCard();
+    }
+
+    function previousCard() {
+      current = (current - 1 + cards.length) % cards.length;
+      showCard();
+    }
+
+    showCard();
+  </script>
+</body>
+</html>
+
