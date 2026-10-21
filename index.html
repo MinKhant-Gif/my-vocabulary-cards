@@ -17,6 +17,9 @@
     h1 { color: #3730a3; }
 
     .card {
+       background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), 
+                  url("https://unsplash.com") no-repeat center center;
+      background-size: cover;
       background: white;
       max-width: 400px;
       min-height: 220px;
@@ -48,6 +51,7 @@
     }
 
     button:hover { background: #3730a3; }
+    
   </style>
 </head>
 
@@ -62,11 +66,20 @@
     <p id="hint">Click the card to see the answer</p>
   </div>
 
-  <button onclick="previousCard()">Previous</button>
-  <button onclick="flipCard()">Show Answer</button>
-  <button onclick="nextCard()">Next</button>
+   <button id="prevBtn" onclick="previousCard()">Previous</button>
+    <button onclick="flipCard()">Show Answer</button>
+    <button id="nextBtn" onclick="nextCard()">Next</button>
+  </div>
+  
+  <br>
+  
+  <button id="restartBtn" onclick="goToFirstCard()">Go to Card 1</button>
 
   <script>
+    function goToFirstCard() {
+  current = 0;
+  showCard();
+}
     const cards = [
       
   {
