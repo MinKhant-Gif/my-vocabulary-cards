@@ -13,9 +13,6 @@
   padding: 30px 15px;
   
   
-  background: url("Cell.jpg") no-repeat center center fixed;
-  background-size: cover;
-  margin: 0;
 }
 
     h1 { color: #e6d009; }
@@ -82,12 +79,28 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
       margin: 0;
     }
+    #bgVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100; /* ကတ်ပြားများနှင့် ခလုတ်များရဲ့ အောက်ခြေသို့ ပို့ထားခြင်း */
+  object-fit: cover;
+}
 
 
   </style>
 </head>
 
 <body>
+     <video autoplay loop muted playsinline id="bgVideo">
+    <source src="celll.mp4" type="video/mp4">
+  </video>
+
+</video>
   <h1>Lesson 2</h1>
   <h2>Cell Processes and Energy</h2>
 
