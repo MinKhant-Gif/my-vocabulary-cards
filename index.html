@@ -8,63 +8,99 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #eef2ff;
-      text-align: center;
-      padding: 30px 15px;
-    }
+       font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 30px 15px;
+  
+  
+  background: url("Cell.jpg") no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+}
 
-    h1 { color: #3730a3; }
-
+    h1 { color: #e6d009; }
+    h2 { color: #e9e0e0fe; }
     .card {
-       background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), 
-                  url("https://unsplash.com") no-repeat center center;
-      background-size: cover;
-      background: white;
-      max-width: 400px;
-      min-height: 220px;
-      margin: 25px auto;
-      border-radius: 20px;
-      box-shadow: 0 8px 25px #0002;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      padding: 20px;
-      box-sizing: border-box;
-    }
+  
+  background: #06abf2;
+  background-size: cover;
+  
+  max-width: 420px;
+  min-height: 250px;
+  margin: 20px auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.655); /* ကတ်ပြား ပိုကြွလာအောင် အရိပ်ကို နည်းနည်း ပိုရင့်ထားပါသည် */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 30px 20px;
+  box-sizing: border-box;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-    #word { font-size: 30px; font-weight: bold; }
-    #meaning { font-size: 22px; color: #4f46e5; }
-    #hint { color: #777; margin-top: 15px; }
+
+    #word { font-size: 30px; font-weight: (193, 169, 12); color: #0e0601; }
+    #meaning { font-size: 22px; color: #372d37; }
+    #hint { color: #463a46; margin-top: 15px; }
 
     button {
       padding: 12px 20px;
       margin: 5px;
       border: none;
       border-radius: 10px;
-      background: #4f46e5;
+      background: #0210077f;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
 
-    button:hover { background: #3730a3; }
-    
+    button:hover { background: #7e0764; }
+  
+    #scoreBoard { 
+      display: inline-block;
+      color: #1e1b4b; 
+      font-size: 18px; 
+      font-weight: bold; 
+      background: #bbf7d0; /* စိမ်းနုရောင်နောက်ခံ */
+      padding: 8px 18px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      margin: 0;
+    }
+
+    /* Card No ပြသမည့် Box ဒီဇိုင်း */
+    #count { 
+      display: inline-block;
+      color: #1e1b4b; 
+      font-size: 18px; 
+      font-weight: bold; 
+      background: #fef08a; /* ဝါနုရောင်နောက်ခံ */
+      padding: 8px 18px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      margin: 0;
+    }
+
+
   </style>
 </head>
 
 <body>
   <h1>Lesson 2  </h1>
   <h2>Cell Processes and Energy</h2>
-  <p id="count"></p>
+   <p id="scoreBoard">Score: 0 / 0 (Answered)</p> 
 
+  
+  <span id="count"></span>
   <div class="card" onclick="flipCard()">
     <div id="word"></div>
     <div id="meaning" hidden></div>
     <p id="hint">Click the card to see the answer</p>
   </div>
+    <button onclick="markCard(true)">✔️ Correct</button>
+    <button onclick="markCard(false)">❌ Incorrect</button>
 
    <button id="prevBtn" onclick="previousCard()">Previous</button>
     <button onclick="flipCard()">Show Answer</button>
@@ -283,51 +319,92 @@
     example: "Farmers harvest crops."
   }
    ];
+let current = 0;
+  let showingAnswer = false;
+  let scores = new Array(cards.length).fill(null); // အမှတ်စာရင်းများ သိမ်းဆည်းရန်
 
-    let current = 0;
-    let showingAnswer = false;
+  // ကတ်ပြားများကို စာမျက်နှာပေါ်တွင် ဖော်ပြပေးမည့် လုပ်ဆောင်ချက်
+  function showCard() {
+    document.getElementById("word").textContent = cards[current].word;
+    document.getElementById("meaning").textContent = cards[current].meaning;
+    document.getElementById("example").textContent = "Example: " + cards[current].example;
 
-    function showCard() {
-      document.getElementById("word").textContent =
-        cards[current].word;
+    document.getElementById("meaning").hidden = true;
+    document.getElementById("word").hidden = false;
+    document.getElementById("hint").textContent = "Click the card to see the answer";
+    document.getElementById("count").textContent = `Card ${current + 1} of ${cards.length}`;
 
-      document.getElementById("meaning").textContent =
-        cards[current].meaning;
+    // Previous နှင့် Next ခလုတ်များ ပိတ်/ဖွင့် စနစ်
+    document.getElementById("prevBtn").disabled = (current === 0);
+    document.getElementById("nextBtn").disabled = (current === cards.length - 1);
+    
+    // ကတ်အသစ်ပြောင်းတိုင်း အမှတ်ပေးခလုတ်ကို ခေတ္တဝှက်ထားပါမည် (သင်ကိုယ်တိုင် HTML ထဲတွင် id="scoringSection" ပေးထားလျှင် အလုပ်လုပ်ပါမည်)
+    const scoreSec = document.getElementById("scoringSection");
+    if (scoreSec) scoreSec.hidden = true;
 
-      document.getElementById("meaning").hidden = true;
-      document.getElementById("word").hidden = false;
-      document.getElementById("hint").textContent =
-        "Click the card to see the answer";
+    updateScoreBoard();
+    showingAnswer = false;
+  }
 
-      document.getElementById("count").textContent =
-        `Card ${current + 1} of ${cards.length}`;
+  // ကတ်ပြားကို လှန်မည့် လုပ်ဆောင်ချက်
+  function flipCard() {
+    showingAnswer = !showingAnswer;
+    document.getElementById("word").hidden = showingAnswer;
+    document.getElementById("meaning").hidden = !showingAnswer;
+    document.getElementById("hint").textContent = showingAnswer ? "Click to see the word" : "Click the card to see the answer";
+    
+    // အဖြေကြည့်ပြီးမှ အမှတ်ပေးခလုတ်တွဲကို ပြသပေးမည်
+    const scoreSec = document.getElementById("scoringSection");
+    if (scoreSec && showingAnswer) scoreSec.hidden = false;
+  }
 
-      showingAnswer = false;
+  // သင့်ရဲ့ ကိုယ်ပိုင်အမှတ်ပေးခလုတ်များအတွက် ချိတ်ဆက်ရန် Function
+  function markCard(isCorrect) {
+    scores[current] = isCorrect; 
+    updateScoreBoard();
+
+    if (current < cards.length - 1) {
+      current++;
+      showCard();
+    } else {
+      const totalCorrect = scores.filter(score => score === true).length;
+      alert(`🎉 အားလုံးပြီးဆုံးသွားပါပြီ။ သင့်ရမှတ်ကတော့ စုစုပေါင်း ၄၀ မှာ ${totalCorrect} မှတ် ရရှိပါတယ်ခင်ဗျာ။`);
     }
+  }
 
-    function flipCard() {
-      showingAnswer = !showingAnswer;
-
-      document.getElementById("word").hidden = showingAnswer;
-      document.getElementById("meaning").hidden = !showingAnswer;
-
-      document.getElementById("hint").textContent =
-        showingAnswer ? "Click to see the word" :
-        "Click the card to see the answer";
+  // စုစုပေါင်းရမှတ်ပြဘုတ်ကို ပြောင်းလဲပေးမည့် လုပ်ဆောင်ချက်
+  function updateScoreBoard() {
+    const attempted = scores.filter(score => score !== null).length;
+    const correct = scores.filter(score => score === true).length;
+    const scoreElement = document.getElementById("scoreBoard");
+    if (scoreElement) {
+      scoreElement.textContent = `Score: ${correct} / ${attempted} (Answered)`;
     }
+  }
 
-    function nextCard() {
-      current = (current + 1) % cards.length;
+  // Next ခလုတ်အတွက်
+  function nextCard() {
+    if (current < cards.length - 1) {
+      current++;
       showCard();
     }
+  }
 
-    function previousCard() {
-      current = (current - 1 + cards.length) % cards.length;
+  // Previous ခလုတ်အတွက်
+  function previousCard() {
+    if (current > 0) {
+      current--;
       showCard();
     }
+  }
 
+  // Reset ခလုတ်အတွက်
+  function goToFirstCard() {
+    current = 0;
+    scores = new Array(cards.length).fill(null);
     showCard();
-  </script>
-</body>
-</html>
+  }
 
+  // စာမျက်နှာစတင်ပွင့်ချိန်တွင် ပထမဆုံးကတ်ပြားကို အလိုအလျောက် ခေါ်ပေးရန်
+  showCard();
+</script>
