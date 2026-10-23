@@ -7,424 +7,454 @@
   <title>My Vocabulary Cards</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-       font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 30px 15px;
-  
-  
-}
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px 15px;
+      margin: 0;
+      min-height: 100vh;
+      color: white;
+    }
 
     h1 { color: #e6d009; }
-    h2 { color: #e9e0e0fe; }
+    h2 { color: #f3eeee; }
+
+    #bgVideo {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.38);
+      z-index: -1;
+    }
+
+    #homeMenu {
+      padding-top: 50px;
+    }
+
     .card {
-  
-  background: #48a9d2bf;
-  background-size: cover;
-  
-  max-width: 420px;
-  min-height: 250px;
-  margin: 20px auto;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.655); /* ကတ်ပြား ပိုကြွလာအောင် အရိပ်ကို နည်းနည်း ပိုရင့်ထားပါသည် */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  padding: 30px 20px;
-  box-sizing: border-box;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+      background: #48a9d2;
+      color: #160d06;
+      max-width: 420px;
+      min-height: 250px;
+      margin: 20px auto;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      padding: 30px 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      overflow-wrap: anywhere;
+    }
 
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+    }
 
-    #word { font-size: 30px; font-weight: (193, 169, 12); color: #0e0601; }
-    #meaning { font-size: 22px; color: #372d37; }
-    #hint { color: #463a46; margin-top: 15px; }
+    #word {
+      font-size: 30px;
+      font-weight: bold;
+      color: #160d06;
+    }
+
+    #meaning {
+      font-size: 22px;
+      color: #372d37;
+    }
+
+    #example {
+      font-size: 17px;
+      color: #211d27;
+      margin-top: 12px;
+    }
+
+    #hint {
+      color: #463a46;
+      margin-top: 15px;
+    }
 
     button {
       padding: 12px 20px;
       margin: 5px;
       border: none;
       border-radius: 10px;
-      background: #0210077f;
+      background: #021007c9;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
 
-    button:hover { background: #7e0764; }
-  
-    #scoreBoard { 
-      display: inline-block;
-      color: #1e1b4b; 
-      font-size: 18px; 
-      font-weight: bold; 
-      background: #bbf7d0; /* စိမ်းနုရောင်နောက်ခံ */
-      padding: 8px 18px;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      margin: 0;
+    button:hover {
+      background: #7e0764;
     }
 
-    /* Card No ပြသမည့် Box ဒီဇိုင်း */
-    #count { 
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #scoreBoard,
+    #count {
       display: inline-block;
-      color: #1e1b4b; 
-      font-size: 18px; 
-      font-weight: bold; 
-      background: #fef08a; /* ဝါနုရောင်နောက်ခံ */
+      font-size: 18px;
+      font-weight: bold;
       padding: 8px 18px;
       border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      margin: 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      margin: 5px;
+      color: #1e1b4b;
     }
-    #bgVideo {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  z-index: -100; /* ကတ်ပြားများနှင့် ခလုတ်များရဲ့ အောက်ခြေသို့ ပို့ထားခြင်း */
-  object-fit: cover;
+
+    #scoreBoard { background: #bbf7d0; }
+    #count { background: #fef08a; }
+
+    .btn-correct { background: #16803c; }
+    .btn-incorrect { background: #b42323; }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 10px; }
+      .card { min-height: 230px; padding: 24px 15px; }
+      #word { font-size: 25px; }
+      #meaning { font-size: 20px; }
+      button { padding: 11px 14px; font-size: 14px; }
+    }
+    /* ပုံထဲကအတိုင်း အပြာရောင်ဝိုင်းဝိုင်းနှင့် Menu Icon ပုံစံ */
+.custom-home-btn {
+  background: linear-gradient(135deg, #2f80ed, #0056b3); /* အပြာရောင် Background */
+  border: none;
+  border-radius: 14px; /* ထောင့်ဝိုင်းပုံစံ */
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+/* အစင်းကြောင်း ၃ ကြောင်း */
+.menu-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20px;
+  height: 12px;
+  margin-right: 4px;
+}
+
+.line {
+  width: 100%;
+  height: 2px;
+  background-color: white; /* အဖြူရောင်လိုင်း */
+  border-radius: 2px;
+}
+
+.line.short {
+  width: 65%; /* အလယ်လိုင်းကို တိုထားခြင်း */
+}
+
+/* မျှားဦးပုံစံ ဖန်တီးခြင်း */
+.arrow-head {
+  width: 8px;
+  height: 8px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(45deg);
+  position: absolute;
+  right: 12px;
+  top: 19px;
+}
+
+/* Button ကို ထိလိုက်ချိန် တုံ့ပြန်မှု */
+.custom-home-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
 
   </style>
 </head>
 
 <body>
-     <video autoplay loop muted playsinline id="bgVideo">
-    <source src="celll.mp4" type="video/mp4">
+  <video autoplay loop muted playsinline id="bgVideo">
+    <source src="background.mp4" type="video/mp4">
   </video>
 
-</video>
-  <h1>Lesson 2</h1>
-  <h2>Cell Processes and Energy</h2>
-
-  <div class="info-container">
-    <span id="count"></span>
-    <p id="scoreBoard">Score: 0 / 0</p> 
+  <div id="homeMenu">
+    <h1>📚 My Vocabulary Hub</h1>
+    <h2>Select a Lesson</h2>
+    <button onclick="selectLesson(1)">Lesson 1</button>
+    <button onclick="selectLesson(2)">Lesson 2</button>
   </div>
 
-  <!-- ကတ်ပြားကိုနှိပ်ရင် လှန်ပေးမည့် စနစ်တစ်ခုပဲ ချန်ထားပါသည် -->
-  <div class="card" onclick="flipCard()">
-    <div id="word"></div>
-    <div id="meaning" hidden></div>
-    <div id="example"></div>
-    <p id="hint">Click the card to see the answer</p>
-  </div>
+  <div id="studyPage" hidden>
+   <button onclick="goHome()" class="custom-home-btn" aria-label="Go Home">
+    <div class="menu-lines">
+      <div class="line"></div>
+      <div class="line short"></div>
+      <div class="line"></div>
+    </div>
+    <div class="arrow-head"></div>
+  </button>
+    <h1 id="lessonTitle">Lesson 1</h1>
+    <h2 id="lessonSubtitle">Cell Structures and Functions</h2>
 
-  <div class="controls-row">
-    <button id="prevBtn" onclick="previousCard()">Previous</button>
-    <!-- Show Answer ခလုတ်က နေရာလွဲမသွားစေရန် ဤနေရာမှ တိုက်ရိုက်ထိန်းချုပ်မှုကို ဖြုတ်ထားပါသည် -->
-    <button id="flipBtn" onclick="flipCard()">Show Answer</button>
-    <button id="nextBtn" onclick="nextCard()">Next</button>
-  </div>
+    <div>
+      <span id="count"></span>
+      <p id="scoreBoard">Score: 0 / 0</p>
+    </div>
 
-  <div id="scoringSection" class="controls-row" hidden>
-    <button class="btn-correct" onclick="markCard(true)">✔️ Correct (မှန်တယ်)</button>
-    <button class="btn-incorrect" onclick="markCard(false)">❌ Incorrect (မှားတယ်)</button>
+    <div class="card" onclick="flipCard()">
+      <div id="word"></div>
+      <div id="meaning" hidden></div>
+      <div id="example"></div>
+      <p id="hint">Click the card to see the answer</p>
+    </div>
+
+    <div>
+      <button id="prevBtn" onclick="previousCard()">Previous</button>
+      <button id="flipBtn" onclick="flipCard()">Show Answer</button>
+      <button id="nextBtn" onclick="nextCard()">Next</button>
+    </div>
+
+    <div id="scoringSection" hidden>
+      <button class="btn-correct" onclick="markCard(true)">
+        ✔️ Correct (မှန်တယ်)
+      </button>
+      <button class="btn-incorrect" onclick="markCard(false)">
+        ❌ Incorrect (မှားတယ်)
+      </button>
+    </div>
+
+    <br>
+    <button onclick="goToFirstCard()">Reset / Go to Card 1</button>
   </div>
-  
-  <br>
-  <button id="restartBtn" onclick="goToFirstCard()">Reset / Go to Card 1</button>
 
   <script>
+    const lesson1Cards = [
+      
+{word: "Cell (Noun)", meaning: "ဆဲလ် — သက်ရှိများ၏ အခြေခံဖွဲ့စည်းမှုယူနစ်", example: "All living things are made of cells."},
+{word: "Cell membrane (Noun)", meaning: "ဆဲလ်အမြှေးပါး", example: "The cell membrane controls what enters and leaves the cell."},
+{word: "Nucleus (Noun)", meaning: "ဆဲလ်နျူကလိယပ်", example: "The nucleus contains most of the cell's DNA."},
+{word: "Cytoplasm (Noun)", meaning: "ဆဲလ်အတွင်းရှိ ဂျယ်လ်ကဲ့သို့သော အရည်ပိုင်း", example: "Many cell activities happen in the cytoplasm."},
+{word: "Mitochondria (Noun)", meaning: "မိုင်တိုကွန်ဒရီးယား", example: "Mitochondria produce usable energy for the cell."},
+{word: "Ribosome (Noun)", meaning: "ပရိုတင်းထုတ်လုပ်ရာ ဆဲလ်အစိတ်အပိုင်း", example: "Ribosomes make proteins."},
+{word: "DNA (Noun)", meaning: "မျိုးရိုးဗီဇဆိုင်ရာ အချက်အလက် သယ်ဆောင်သော မော်လီကျူး", example: "DNA carries genetic information."},
+{word: "Gene (Noun)", meaning: "မျိုးရိုးဗီဇဆိုင်ရာ အချက်အလက်ပါဝင်သော DNA အပိုင်း", example: "A gene is a section of DNA."},
+{word: "Protein (Noun)", meaning: "ပရိုတင်း", example: "Proteins help cells perform their functions."},
+{word: "Organelle (Noun)", meaning: "ဆဲလ်အတွင်း သီးခြားလုပ်ငန်းဆောင်ရွက်သော အစိတ်အပိုင်း", example: "Each organelle has a specific function."},
+{word: "Cell division (Noun)", meaning: "ဆဲလ်ခွဲခြင်း", example: "Cell division helps organisms grow."},
+{word: "Growth (Noun)", meaning: "ကြီးထွားမှု", example: "Cells need energy for growth."},
+{word: "Reproduction (Noun)", meaning: "မျိုးပွားခြင်း", example: "Reproduction produces new organisms."},
+{word: "Tissue (Noun)", meaning: "ဆင်တူသော ဆဲလ်များ စုပေါင်းဖွဲ့စည်းထားသော တစ်ရှူး", example: "A tissue is made of similar cells."},
+{word: "Organ (Noun)", meaning: "ကိုယ်အင်္ဂါ", example: "The heart is an organ."},
+{word: "Organism (Noun)", meaning: "သက်ရှိတစ်ခု", example: "A plant is a living organism."},
+{word: "Microscopic (Adjective)", meaning: "အလွန်သေးငယ်၍ အဏုကြည့်မှန်ပြောင်းဖြင့် ကြည့်ရသော", example: "Most cells are microscopic."},
+{word: "Unicellular (Adjective)", meaning: "ဆဲလ်တစ်လုံးတည်းဖြင့် ဖွဲ့စည်းထားသော", example: "Some bacteria are unicellular."},
+{word: "Multicellular (Adjective)", meaning: "ဆဲလ်များစွာဖြင့် ဖွဲ့စည်းထားသော", example: "Humans are multicellular organisms."},
+{word: "Living (Adjective)", meaning: "အသက်ရှိသော", example: "Living things need energy."},
+{word: "Function (Noun / Verb)", meaning: "လုပ်ဆောင်ချက် / လုပ်ဆောင်သည်", example: "Each organelle has a function."},
+{word: "Contain (Verb)", meaning: "ပါဝင်သည်၊ ထည့်သွင်းထားသည်", example: "The nucleus contains DNA."},
+{word: "Produce (Verb)", meaning: "ထုတ်လုပ်သည်", example: "Ribosomes produce proteins."},
+{word: "Absorb (Verb)", meaning: "စုပ်ယူသည်", example: "Cells absorb nutrients."},
+{word: "Release (Verb)", meaning: "ထုတ်လွှတ်သည်", example: "Cells release waste products."},
+{word: "Divide (Verb)", meaning: "ခွဲခြားသည်၊ ခွဲထွက်သည်", example: "Cells divide to make new cells."},
+{word: "Repair (Verb)", meaning: "ပြုပြင်သည်", example: "Cells repair damaged parts."},
+{word: "Transport (Verb / Noun)", meaning: "သယ်ယူပို့ဆောင်သည် / သယ်ယူပို့ဆောင်မှု", example: "The cell membrane helps transport substances."},
+{word: "Survive (Verb)", meaning: "အသက်ရှင်ကျန်ရစ်သည်", example: "Cells need energy to survive."},
+{word: "Essential (Adjective)", meaning: "မရှိမဖြစ်အရေးကြီးသော", example: "Water is essential for life."}
+
+    ];
+
+    const lesson2Cards = [
+      
+{word: "Cell process (Noun)", meaning: "ဆဲလ်အတွင်း ဖြစ်ပေါ်သော လုပ်ငန်းစဉ်", example: "Cells need energy for life processes."},
+{word: "Energy (Noun)", meaning: "စွမ်းအင်", example: "All cells need energy."},
+{word: "Growth (Noun)", meaning: "ကြီးထွားမှု", example: "Plants need energy for growth."},
+{word: "Reproduction (Noun)", meaning: "မျိုးပွားခြင်း", example: "Cells need energy for reproduction."},
+{word: "Algae (Noun)", meaning: "ရေညှိများ", example: "Some algae use sunlight to make food."},
+{word: "Bacteria (Noun)", meaning: "ဘက်တီးရီးယားများ", example: "Some bacteria use energy from sunlight."},
+{word: "Photosynthesis (Noun)", meaning: "အလင်းမှီအစာချက်လုပ်ခြင်း", example: "Plants make food through photosynthesis."},
+{word: "Sunlight (Noun)", meaning: "နေရောင်ခြည်", example: "Plants need sunlight for photosynthesis."},
+{word: "Chemical reaction (Noun)", meaning: "ဓာတုတုံ့ပြန်မှု", example: "Photosynthesis involves chemical reactions."},
+{word: "Carbon dioxide (Noun)", meaning: "ကာဗွန်ဒိုင်အောက်ဆိုဒ် (CO₂)", example: "Plants take in carbon dioxide."},
+{word: "Water (Noun)", meaning: "ရေ (H₂O)", example: "Plants use water during photosynthesis."},
+{word: "Oxygen (Noun)", meaning: "အောက်ဆီဂျင် (O₂)", example: "Plants release oxygen."},
+{word: "Glucose (Noun)", meaning: "ဂလူးကို့စ်၊ ရိုးရှင်းသောသကြားတစ်မျိုး", example: "Plants produce glucose."},
+{word: "Chloroplast (Noun)", meaning: "အလင်းမှီအစာချက်လုပ်မှု ဖြစ်ပေါ်ရာ ဆဲလ်အစိတ်အပိုင်း", example: "Chloroplasts are found in plant cells."},
+{word: "Chlorophyll (Noun)", meaning: "ကလိုရိုဖီးလ်၊ အစိမ်းရောင်ရောင်ခြယ်ပစ္စည်း", example: "Chlorophyll absorbs light energy."},
+{word: "Pigment (Noun)", meaning: "ရောင်ခြယ်ပစ္စည်း", example: "Chlorophyll is a green pigment."},
+{word: "Absorb (Verb)", meaning: "စုပ်ယူသည်", example: "Chlorophyll absorbs light energy."},
+{word: "Capture (Verb)", meaning: "ဖမ်းယူသည်", example: "Chloroplasts capture light energy."},
+{word: "Raw material (Noun)", meaning: "ကုန်ကြမ်း၊ တုံ့ပြန်မှုအတွက် လိုအပ်သော မူလပစ္စည်း", example: "Water is a raw material for photosynthesis."},
+{word: "Product (Noun)", meaning: "ထွက်ကုန်၊ တုံ့ပြန်မှုမှ ရရှိသောပစ္စည်း", example: "Oxygen is a product of photosynthesis."},
+{word: "Carbohydrate (Noun)", meaning: "ကာဗိုဟိုက်ဒရိတ်၊ စွမ်းအင်ပေးသော အာဟာရဓာတ်", example: "Glucose is a carbohydrate."},
+{word: "Break down (Phrasal verb)", meaning: "ဖြိုခွဲသည်၊ ခွဲခြမ်းဖျက်ဆီးသည်", example: "Cells break down glucose."},
+{word: "Release (Verb)", meaning: "ထုတ်လွှတ်သည်", example: "Plants release oxygen."},
+{word: "Cellular respiration (Noun)", meaning: "ဆဲလ်အသက်ရှူခြင်း၊ ဂလူးကို့စ်မှ စွမ်းအင်ရယူသည့် လုပ်ငန်းစဉ်", example: "Cells release energy through cellular respiration."},
+{word: "Atmosphere (Noun)", meaning: "လေထု", example: "Oxygen is released into the atmosphere."},
+{word: "Waste product (Noun)", meaning: "စွန့်ပစ်ပစ္စည်း၊ လုပ်ငန်းစဉ်မှ ထွက်လာသော အပိုပစ္စည်း", example: "Plants release oxygen as a waste product of photosynthesis."},
+{word: "Organism (Noun)", meaning: "သက်ရှိတစ်ခု", example: "Animals are living organisms."},
+{word: "Palisade cell (Noun)", meaning: "အရွက်၏ အလင်းမှီအစာချက်လုပ်မှု အဓိကဖြစ်ပေါ်ရာ ဆဲလ်", example: "Photosynthesis occurs mainly in palisade cells."},
+{word: "Epidermal cell (Noun)", meaning: "အပေါ်ယံအလွှာဆဲလ်", example: "Sunlight passes through epidermal cells."},
+{word: "Spongy cell (Noun)", meaning: "အရွက်အတွင်းရှိ ရေမြှုပ်ပုံစံဆဲလ်", example: "Spongy cells are found inside leaves."},
+{word: "Stoma (Noun)", meaning: "အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက်တစ်ပေါက်", example: "Carbon dioxide enters through a stoma."},
+{word: "Stomata (Noun)", meaning: "Stoma ၏ အများကိန်း၊ အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက်များ", example: "Carbon dioxide enters through stomata."},
+{word: "Xylem (Noun)", meaning: "အပင်အတွင်း ရေနှင့် သတ္တုဓာတ်များ သယ်ပို့သော တစ်ရှူး", example: "Xylem transports water."},
+{word: "Diffuse (Verb)", meaning: "ပျံ့နှံ့သွားသည်", example: "Water diffuses from the xylem."},
+{word: "Transport (Verb)", meaning: "သယ်ယူပို့ဆောင်သည်", example: "Xylem transports water through a plant."},
+{word: "Greenhouse gas (Noun)", meaning: "အပူကို လေထုထဲတွင် ထိန်းသိမ်းစေသော ဖန်လုံအိမ်ဓာတ်ငွေ့", example: "Carbon dioxide is a greenhouse gas."},
+{word: "Global warming (Noun)", meaning: "ကမ္ဘာ့ပျမ်းမျှအပူချိန် မြင့်တက်လာခြင်း", example: "Greenhouse gases contribute to global warming."},
+{word: "Population (Noun)", meaning: "လူဦးရေ၊ သက်ရှိအုပ်စုတစ်စု၏ အရေအတွက်", example: "The population of plants increased."},
+{word: "Increase (Verb)", meaning: "တိုးလာသည်၊ တိုးမြှင့်သည်", example: "More light can increase photosynthesis."},
+{word: "Harvest (Noun / Verb)", meaning: "ရိတ်သိမ်းခြင်း / ရိတ်သိမ်းသည်", example: "Farmers harvest crops."}
+
+    ];
+
+    let cards = lesson1Cards;
+    let current = 0;
+    let showingAnswer = false;
+    let scores = new Array(cards.length).fill(null);
+    let activeLesson = 1;
+
+    function selectLesson(lessonNumber) {
+      activeLesson = lessonNumber;
+
+      if (lessonNumber === 1) {
+        cards = lesson1Cards;
+        document.getElementById("lessonTitle").textContent = "Lesson 1";
+        document.getElementById("lessonSubtitle").textContent =
+          "Cell Structures and Functions";
+      } else {
+        cards = lesson2Cards;
+        document.getElementById("lessonTitle").textContent = "Lesson 2";
+        document.getElementById("lessonSubtitle").textContent =
+          "Cell Processes and Energy";
+      }
+
+      current = 0;
+      showingAnswer = false;
+      scores = new Array(cards.length).fill(null);
+
+      document.getElementById("homeMenu").hidden = true;
+      document.getElementById("studyPage").hidden = false;
+
+      showCard();
+    }
+
+    function goHome() {
+      document.getElementById("studyPage").hidden = true;
+      document.getElementById("homeMenu").hidden = false;
+    }
+
+    function showCard() {
+      document.getElementById("word").textContent = cards[current].word;
+      document.getElementById("meaning").textContent = cards[current].meaning;
+      document.getElementById("example").textContent =
+        "Example: " + cards[current].example;
+
+      document.getElementById("meaning").hidden = true;
+      document.getElementById("word").hidden = false;
+      document.getElementById("hint").textContent =
+        "Click the card to see the answer";
+
+      document.getElementById("count").textContent =
+        `Card ${current + 1} of ${cards.length}`;
+
+      document.getElementById("prevBtn").disabled = current === 0;
+      document.getElementById("nextBtn").disabled =
+        current === cards.length - 1;
+
+      document.getElementById("scoringSection").hidden = true;
+      document.getElementById("flipBtn").textContent = "Show Answer";
+
+      updateScoreBoard();
+      showingAnswer = false;
+    }
+
+    function flipCard() {
+      showingAnswer = !showingAnswer;
+      document.getElementById("word").hidden = showingAnswer;
+      document.getElementById("meaning").hidden = !showingAnswer;
+
+      document.getElementById("hint").textContent = showingAnswer
+        ? "Click the card to see the word"
+        : "Click the card to see the answer";
+
+      document.getElementById("scoringSection").hidden = !showingAnswer;
+      document.getElementById("flipBtn").textContent = showingAnswer
+        ? "Show Word"
+        : "Show Answer";
+    }
+
+    function markCard(isCorrect) {
+      scores[current] = isCorrect;
+      updateScoreBoard();
+
+      if (current < cards.length - 1) {
+        current++;
+        showCard();
+      } else {
+        const totalCorrect =
+          scores.filter(score => score === true).length;
+
+        alert(
+          `🎉 Lesson ${activeLesson} ပြီးဆုံးပါပြီ။ ` +
+          `စုစုပေါင်း ${cards.length} ကတ်မှာ ${totalCorrect} မှတ် ရရှိပါတယ်။`
+        );
+      }
+    }
+
+    function updateScoreBoard() {
+      const attempted =
+        scores.filter(score => score !== null).length;
+      const correct =
+        scores.filter(score => score === true).length;
+
+      document.getElementById("scoreBoard").textContent =
+        `Score: ${correct} / ${attempted}`;
+    }
+
+    function nextCard() {
+      if (current < cards.length - 1) {
+        current++;
+        showCard();
+      }
+    }
+
+    function previousCard() {
+      if (current > 0) {
+        current--;
+        showCard();
+      }
+    }
+
     function goToFirstCard() {
-  current = 0;
-  showCard();
-}
-    const cards = [
-      
-  {
-    word: "Cell process (Noun)",
-    meaning: "ဆဲလ်အတွင်း ဖြစ်ပေါ်သော လုပ်ငန်းစဉ်",
-    example: "Cells need energy for life processes."
-  },
-  {
-    word: "Energy (Noun)",
-    meaning: "စွမ်းအင်",
-    example: "All cells need energy."
-  },
-  {
-    word: "Growth (Noun)",
-    meaning: "ကြီးထွားမှု",
-    example: "Plants need energy for growth."
-  },
-  {
-    word: "Reproduction (Noun)",
-    meaning: "မျိုးပွားခြင်း",
-    example: "Cells need energy for reproduction."
-  },
-  {
-    word: "Algae (Noun)",
-    meaning: "ရေညှိများ",
-    example: "Some algae use sunlight to make food."
-  },
-  {
-    word: "Bacteria (Noun)",
-    meaning: "ဘက်တီးရီးယားများ",
-    example: "Some bacteria use energy from sunlight."
-  },
-  {
-    word: "Photosynthesis (Noun)",
-    meaning: "အလင်းမှီအစာချက်လုပ်ခြင်း",
-    example: "Plants make food through photosynthesis."
-  },
-  {
-    word: "Sunlight (Noun)",
-    meaning: "နေရောင်ခြည်",
-    example: "Plants need sunlight for photosynthesis."
-  },
-  {
-    word: "Chemical reaction (Noun)",
-    meaning: "ဓာတုတုံ့ပြန်မှု",
-    example: "Photosynthesis involves chemical reactions."
-  },
-  {
-    word: "Carbon dioxide (Noun)",
-    meaning: "ကာဗွန်ဒိုင်အောက်ဆိုဒ် (CO₂)",
-    example: "Plants take in carbon dioxide."
-  },
-  {
-    word: "Water (Noun)",
-    meaning: "ရေ (H₂O)",
-    example: "Plants use water during photosynthesis."
-  },
-  {
-    word: "Oxygen (Noun)",
-    meaning: "အောက်ဆီဂျင် (O₂)",
-    example: "Plants release oxygen."
-  },
-  {
-    word: "Glucose (Noun)",
-    meaning: "ဂလူးကို့စ်၊ ရိုးရှင်းသောသကြားတစ်မျိုး",
-    example: "Plants produce glucose."
-  },
-  {
-    word: "Chloroplast (Noun)",
-    meaning: "အလင်းမှီအစာချက်လုပ်မှု ဖြစ်ပေါ်ရာ ဆဲလ်အစိတ်အပိုင်း",
-    example: "Chloroplasts are found in plant cells."
-  },
-  {
-    word: "Chlorophyll (Noun)",
-    meaning: "ကလိုရိုဖီးလ်၊ အစိမ်းရောင်ရောင်ခြယ်ပစ္စည်း",
-    example: "Chlorophyll absorbs light energy."
-  },
-  {
-    word: "Pigment (Noun)",
-    meaning: "ရောင်ခြယ်ပစ္စည်း",
-    example: "Chlorophyll is a green pigment."
-  },
-  {
-    word: "Absorb (Verb)",
-    meaning: "စုပ်ယူသည်",
-    example: "Chlorophyll absorbs light energy."
-  },
-  {
-    word: "Capture (Verb)",
-    meaning: "ဖမ်းယူသည်",
-    example: "Chloroplasts capture light energy."
-  },
-  {
-    word: "Raw material (Noun)",
-    meaning: "ကုန်ကြမ်း၊ တုံ့ပြန်မှုအတွက် လိုအပ်သော မူလပစ္စည်း",
-    example: "Water is a raw material for photosynthesis."
-  },
-  {
-    word: "Product (Noun)",
-    meaning: "ထွက်ကုန်၊ တုံ့ပြန်မှုမှ ရရှိသောပစ္စည်း",
-    example: "Oxygen is a product of photosynthesis."
-  },
-  {
-    word: "Carbohydrate (Noun)",
-    meaning: "ကာဗိုဟိုက်ဒရိတ်၊ စွမ်းအင်ပေးသော အာဟာရဓာတ်",
-    example: "Glucose is a carbohydrate."
-  },
-  {
-    word: "Break down (Phrasal verb)",
-    meaning: "ဖြိုခွဲသည်၊ ခွဲခြမ်းဖျက်ဆီးသည်",
-    example: "Cells break down glucose."
-  },
-  {
-    word: "Release (Verb)",
-    meaning: "ထုတ်လွှတ်သည်",
-    example: "Plants release oxygen."
-  },
-  {
-    word: "Cellular respiration (Noun)",
-    meaning: "ဆဲလ်အသက်ရှူခြင်း၊ ဂလူးကို့စ်မှ စွမ်းအင်ရယူသည့် လုပ်ငန်းစဉ်",
-    example: "Cells release energy through cellular respiration."
-  },
-  {
-    word: "Atmosphere (Noun)",
-    meaning: "လေထု",
-    example: "Oxygen is released into the atmosphere."
-  },
-  {
-    word: "Waste product (Noun)",
-    meaning: "စွန့်ပစ်ပစ္စည်း၊ လုပ်ငန်းစဉ်မှ ထွက်လာသော အပိုပစ္စည်း",
-    example: "Plants release oxygen as a waste product of photosynthesis."
-  },
-  {
-    word: "Organism (Noun)",
-    meaning: "သက်ရှိတစ်ခု",
-    example: "Animals are living organisms."
-  },
-  {
-    word: "Palisade cell (Noun)",
-    meaning: "အရွက်၏ အလင်းမှီအစာချက်လုပ်မှု အဓိကဖြစ်ပေါ်ရာ ဆဲလ်",
-    example: "Photosynthesis occurs mainly in palisade cells."
-  },
-  {
-    word: "Epidermal cell (Noun)",
-    meaning: "အပေါ်ယံအလွှာဆဲလ်",
-    example: "Sunlight passes through epidermal cells."
-  },
-  {
-    word: "Spongy cell (Noun)",
-    meaning: "အရွက်အတွင်းရှိ ရေမြှုပ်ပုံစံဆဲလ်",
-    example: "Spongy cells are found inside leaves."
-  },
-  {
-    word: "Stoma (Noun)",
-    meaning: "အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက် တစ်ပေါက်",
-    example: "Carbon dioxide enters through a stoma."
-  },
-  {
-    word: "Stomata (Noun)",
-    meaning: "Stoma ၏ အများကိန်း၊ အရွက်ရှိ ဓာတ်ငွေ့ဝင်ထွက်ပေါက်များ",
-    example: "Carbon dioxide enters through stomata."
-  },
-  {
-    word: "Xylem (Noun)",
-    meaning: "အပင်အတွင်း ရေနှင့် သတ္တုဓာတ်များ သယ်ပို့သော တစ်ရှူး",
-    example: "Xylem transports water."
-  },
-  {
-    word: "Diffuse (Verb)",
-    meaning: "ပျံ့နှံ့သွားသည်",
-    example: "Water diffuses from the xylem."
-  },
-  {
-    word: "Transport (Verb)",
-    meaning: "သယ်ယူပို့ဆောင်သည်",
-    example: "Xylem transports water through a plant."
-  },
-  {
-    word: "Greenhouse gas (Noun)",
-    meaning: "အပူကို လေထုထဲတွင် ထိန်းသိမ်းစေသော ဖန်လုံအိမ်ဓာတ်ငွေ့",
-    example: "Carbon dioxide is a greenhouse gas."
-  },
-  {
-    word: "Global warming (Noun)",
-    meaning: "ကမ္ဘာ့ပျမ်းမျှအပူချိန် မြင့်တက်လာခြင်း",
-    example: "Greenhouse gases contribute to global warming."
-  },
-  {
-    word: "Population (Noun)",
-    meaning: "လူဦးရေ၊ သက်ရှိအုပ်စုတစ်စု၏ အရေအတွက်",
-    example: "The population of plants increased."
-  },
-  {
-    word: "Increase (Verb)",
-    meaning: "တိုးလာသည်၊ တိုးမြှင့်သည်",
-    example: "More light can increase photosynthesis."
-  },
-  {
-    word: "Harvest (Noun / Verb)",
-    meaning: "ရိတ်သိမ်းခြင်း / ရိတ်သိမ်းသည်",
-    example: "Farmers harvest crops."
-  }
-   ];
-let current = 0;
-  let showingAnswer = false;
-  let scores = new Array(cards.length).fill(null); // အမှတ်စာရင်းများ သိမ်းဆည်းရန်
-
-  // ကတ်ပြားများကို စာမျက်နှာပေါ်တွင် ဖော်ပြပေးမည့် လုပ်ဆောင်ချက်
-  function showCard() {
-    document.getElementById("word").textContent = cards[current].word;
-    document.getElementById("meaning").textContent = cards[current].meaning;
-    document.getElementById("example").textContent = "Example: " + cards[current].example;
-
-    document.getElementById("meaning").hidden = true;
-    document.getElementById("word").hidden = false;
-    document.getElementById("hint").textContent = "Click the card to see the answer";
-    document.getElementById("count").textContent = `Card ${current + 1} of ${cards.length}`;
-
-    document.getElementById("prevBtn").disabled = (current === 0);
-    document.getElementById("nextBtn").disabled = (current === cards.length - 1);
-    
-    const scoreSec = document.getElementById("scoringSection");
-    if (scoreSec) scoreSec.hidden = true;
-
-    updateScoreBoard();
-    showingAnswer = false;
-  }
-
-  function flipCard() {
-    showingAnswer = !showingAnswer;
-    document.getElementById("word").hidden = showingAnswer;
-    document.getElementById("meaning").hidden = !showingAnswer;
-    document.getElementById("hint").textContent = showingAnswer ? "Click to see the word" : "Click the card to see the answer";
-    
-    const scoreSec = document.getElementById("scoringSection");
-    if (scoreSec && showingAnswer) scoreSec.hidden = false;
-  }
-
-  // ပြင်ဆင်ထားသော အမှတ်ပေးခလုတ် Function ဖြစ်ပါသည်
-  function markCard(isCorrect) {
-    scores[current] = isCorrect; 
-    updateScoreBoard();
-
-    if (current < cards.length - 1) {
-      current++;
-      
-      // နောက်တစ်ကတ်ပြောင်းလျှင် အဖြေကိုပြန်ဝှက်ပြီး Word ကိုပဲ ပြန်စပေါ်စေမည့်စနစ်
-      showingAnswer = false; 
-      
-      showCard();
-    } else {
-      const totalCorrect = scores.filter(score => score === true).length;
-      alert(`🎉 အားလုံးပြီးဆုံးသွားပါပြီ။ သင့်ရမှတ်ကတော့ စုစုပေါင်း ၄၀ မှာ ${totalCorrect} မှတ် ရရှိပါတယ်ခင်ဗျာ။`);
-    }
-  }
-
-  function updateScoreBoard() {
-    const attempted = scores.filter(score => score !== null).length;
-    const correct = scores.filter(score => score === true).length;
-    const scoreElement = document.getElementById("scoreBoard");
-    if (scoreElement) {
-      scoreElement.textContent = `Score: ${correct} / ${attempted}`;
-    }
-  }
-
-  function nextCard() {
-    if (current < cards.length - 1) {
-      current++;
-      showingAnswer = false; // Next ခလုတ်နှိပ်လျှင်လည်း အဖြေကိုပြန်ဝှက်ရန်
+      current = 0;
+      scores = new Array(cards.length).fill(null);
       showCard();
     }
-  }
-
-  function previousCard() {
-    if (current > 0) {
-      current--;
-      showingAnswer = false; // Previous ခလုတ်နှိပ်လျှင်လည်း အဖြေကိုပြန်ဝှက်ရန်
-      showCard();
-    }
-  }
-
-  function goToFirstCard() {
-    current = 0;
-    scores = new Array(cards.length).fill(null);
-    showingAnswer = false;
-    showCard();
-  }
-
-  // စာမျက်နှာစဖွင့်ချင်း ပထမဆုံးကတ်ကို ခေါ်ပေးရန်
-  showCard();
-</script>
+  </script>
+</body>
+</html>
